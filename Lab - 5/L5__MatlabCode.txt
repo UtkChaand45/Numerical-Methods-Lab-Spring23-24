@@ -1,0 +1,79 @@
+Lab 5 (1st order Hyperbolic PDEs Lax Frederichs)
+
+Ass 1 (My Ver)
+g=input("number of grid points:");
+x = linspace(-1,1,g);
+delx = (2)/(g-1);
+f_x=@(l) l;
+lambda=0.8;
+delt=lambda*delx;
+t = input("time t:");
+t_n=round(4/delt);
+u = zeros(t_n,g);
+for i=1:g
+    if abs(x(i)) < (1/3)
+        u(1,i)=1;
+    end
+    if (abs(x(i)) <= (1) && abs(x(i)) > 1/3)
+        u(1,i)=0;
+    end
+end
+u(1,g)=u(1,1);
+plot(x,u(1,:));
+hold on;
+for n=1:t_n-1
+    for i=1:g
+        if (i-1)==0
+            u(n+1,i)=0.5*(u(n,i+1)+u(n,g-1)) - (delt/(2*delx)) * ((u(n,i+1))-(u(n,g-1)));
+        elseif (i+1)==g+1
+            u(n+1,i)=0.5*(u(n,2)+u(n,i-1))-(delt/(2*delx))*(u(n,2))-(u(n,i-1));
+        else
+            u(n+1,i)=0.5*(u(n,i+1)+u(n,i-1))-(delt/(2*delx))*((u(n,i+1))-(u(n,i-1)));
+        end
+    end
+end
+plot(x,u(t_n,:));
+
+
+
+
+
+
+
+
+
+
+Ass 2 (Ver 2)
+
+g=input("number of grid points:");
+x = linspace(-1,1,g);
+delx = (2)/(g-1);
+f_x=@(l) l*l/2;
+lambda=0.8;
+delt=lambda*delx;
+t = input("time t:");
+t_n=round(t/delt);
+u = zeros(t_n,g);
+for i=1:g
+    if abs(x(i)) < (1/3)
+        u(1,i)=1;
+    elseif (abs(x(i)) <= (1) && abs(x(i)) > 1/3)
+        u(1,i)=-1;
+    end
+end
+u(1,g)=u(1,1);
+%plot(x,u(1,:));
+hold on;
+u(1,:)
+for n=1:t_n-1
+    for i=1:g
+        if (i-1)==0
+            u(n+1,i)=0.5*( u(n,i+1) + u(n,g-1) ) - ( delt/(2*delx) ) * ( f_x((u(n,i+1)))-f_x((u(n,g-1))) );
+        elseif (i+1)==g+1
+            u(n+1,i)=0.5*(u(n,2)+u(n,i-1))-(delt/(2*delx))*( f_x(u(n,2)))-( f_x(u(n,i-1)) );
+        else
+            u(n+1,i)=0.5*(u(n,i+1)+u(n,i-1))-(delt/(2*delx))*( f_x(u(n,i+1))- f_x(u(n,i-1)) );
+        end
+    end
+end
+plot(x,u(t_n,:));

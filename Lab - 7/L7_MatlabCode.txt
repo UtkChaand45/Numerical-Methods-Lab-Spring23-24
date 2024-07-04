@@ -1,0 +1,128 @@
+Lab 7 (ID System of presureless gas equation)
+
+stepx=input("enter the step size of x:");
+xi=-1:stepx:1;
+deltarr=ones(1,length(xi));
+delt=[0];
+P=ones(1,length(xi));
+U=ones(1,length(xi));
+u1=zeros(length(xi),1);
+u2=zeros(length(xi),1);
+for i=1:length(xi)
+    if(xi(i)<0)
+        u2(i,size(u1,2))=2;
+    else
+        u2(i,size(u1,2))=-2;
+    end
+     
+     u1(i,size(u2,2))=1;
+    
+end
+subplot(2, 1, 1); % Create subplot for first two graphs
+plot(xi, u1(:, 1));
+hold on;
+plot(xi, u2(:, 1));
+title('Initial u1 and u2');
+xlabel('xi');
+ylabel('Values');
+legend('u1', 'u2');
+k=1;
+  
+while sum(delt)<0.5
+    k=k+1;
+   for i=1:length(xi)
+      deltarr(i)=(0.8*stepx)/abs(u2(i,k-1)/u1(i,k-1));
+   end
+    delt(1,k)=min(deltarr);
+   for i=2:length(xi)-1
+    
+    u1(i,k)=0.5*(u1(i+1,k-1)+u1(i-1,k-1))-((0.5/stepx)*delt(1,k))*(u2(i+1,k-1)-u2(i-1,k-1));
+ u2(i,k)=0.5*(u2(i+1,k-1)+u2(i-1,k-1))-((0.5/stepx)*delt(1,k))*((u2(i+1,k-1)^2 /u1(i+1,k-1))-(u2(i-1,k-1)^2 /u1(i-1,k-1)));
+   end
+   u1(1,k)=u1(2,k);
+   u1(length(xi),k)=u1(length(xi)-1,k);
+   u2(1,k)=u2(2,k);
+   u2(length(xi),k)=u2(length(xi)-1,k);
+end
+   
+   for i=1:length(xi)
+    P(i)=u1(i,k);
+    U(i)=u2(i,k)/u1(i,k);
+   end
+   k
+   sum(delt)
+   subplot(2, 1, 2); % Create subplot for the next two graphs
+plot(xi, P, '--r');
+hold on;
+plot(xi, U);
+title('Final P and U');
+xlabel('xi');
+ylabel('Values');
+legend('P', 'U');
+
+
+
+My Ver:
+
+
+delx=input("Enter delta x:");
+X=1;
+g=(2/delx)+1;
+x=linspace(-1,1,g);
+T=0.5;
+t=[];
+t(1)=0;
+fun=1;
+h=zeros(200,g);
+hu=zeros(200,g);
+u=zeros(1,g);
+
+if fun==1
+    h(1,:) = 1; 
+end
+
+for i=1:g
+        if x(i)<0
+            
+            hu(1,i)=2;
+        else
+           
+            hu(1,i)=-2;
+        end
+end
+
+sum_t=0;
+n=1;
+while (sum_t<=T)
+    timestep=zeros(1,g);
+    for i = 1:g
+        timestep(1,i) = 0.8 * delx / ( abs( hu(n,i)/h(n,i) ) );
+    end
+    delt=min(timestep);
+    for i=1:g
+        if (i-1)==0  
+            h(n+1,i)=0.5*(h(n,i+1)+h(n,1)) - (delt/(2*delx)) * ((hu(n,i+1))-(hu(n,1)));
+            hu(n+1,i)=0.5*(hu(n,i+1)+hu(n,1)) - (delt/(2*delx)) * ( hu(n,i+1)*hu(n,i+1)/h(n,i+1) - ( hu(n,1)*hu(n,1)/h(n,1)));
+           
+        elseif (i+1)==g+1
+            h(n+1,i)=0.5*(h(n,g)+h(n,i-1))-(delt/(2*delx))*(hu(n,g))-(hu(n,i-1));
+            hu(n+1,i)=0.5*(hu(n,g)+hu(n,i-1)) - (delt/(2*delx)) * ((hu(n,g)*hu(n,g)/h(n,g))-(hu(n,i-1)*hu(n,i-1)/h(n,i-1)));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+          
+        else
+            h(n+1,i)=0.5*(h(n,i+1)+h(n,i-1))-(delt/(2*delx))*((hu(n,i+1))-(hu(n,i+1)));
+            hu(n+1,i)=0.5*(hu(n,i+1)+hu(n,i-1)) - (delt/(2*delx)) * ((hu(n,i+1)*hu(n,i+1)/h(n,i+1))-(hu(n,i-1)*hu(n,i-1)/h(n,i-1)));
+           
+        end
+    end
+    sum_t = sum_t + delt;
+    t(n+1)=sum_t;
+    n=n+1;
+end
+for i=1:g
+    u(1,i)=hu(n,i)/h(n,i);
+end
+plot(x,h(1,:),'r-')
+hold off;
+plot(x,h(n,:),'g-')
+hold off;
+plot(x,u(1,:),'b-')

@@ -1,0 +1,31 @@
+Lab 8 (Explicit Scheme for Parabolic Eqn)
+
+clear space;
+dx=0.02;
+F=0.9;
+g=((1-0)/dx)+1;
+dt=F*((dx)^2)/2;
+x=linspace(0,1,g);
+t=zeros(501);
+for i=2:501
+    t(i) = t(i-1) + dt;
+end
+u=zeros(501,g);
+for i=1:501
+    u(i,51)=0;
+    u(i,1)=0;
+end
+for i=1:g
+    u(1,i)=sin(pi*x(i));
+end
+for n = 1:500
+    for i=2:50
+        u(n+1,i) = u(n,i) + (dt/(dx*dx))*(u(n,i+1) - 2*u(n,i) + u(n,i-1));
+    end
+end
+plot(x,u(301,:));
+hold on;
+plot(x,u(401,:));
+hold on;
+plot(x,u(501,:));
+

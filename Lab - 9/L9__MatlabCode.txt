@@ -1,0 +1,194 @@
+Lab 9 Assignment 1 (Crank Nicolson Method):
+clear space;
+dx=0.1;
+%F=0.9;
+g=((1-0)/dx)+1;
+dt=0.01;
+
+%dt=F*((dx)^2)/2;
+alpha = 1/(pi)^2;
+l = ((alpha*dt) / (dx*dx));
+x=linspace(0,1,g);
+t=zeros(11,1);
+for i=2:11
+    t(i,1) = t(i-1,1) + dt;
+end
+u=zeros(11,g);
+for i=1:11
+    u(i,11)=0;
+    u(i,1)=0;
+end
+for i=1:g
+    u(1,i)=sin(pi*x(i));
+end
+M=zeros(9,11);
+B=zeros(9,1);
+kk=1;
+for i = 2:10
+    M(i-1,kk)= -l;
+    M(i-1,kk+1)= 2*(1+l);
+    M(i-1,kk+2)= -l;
+    kk = kk + 1;
+end
+
+
+for n = 1:10
+    for i=2:10
+        B(i-1,1) = l*u(n,i-1) + 2*(1-l)*u(n,i) + l*u(n,i+1);
+        %u(n+1,i) = u(n,i) + (dt/(dx*dx))*(u(n,i+1) - 2*u(n,i) + u(n,i-1));
+    end
+    u(n+1,:) = linsolve(M,B);
+end
+plot(x,u(11,:));
+surf(x,t,u(:,:));
+
+Lab 9 Assignment 3 (Ritil)
+program 3:-
+
+hold on;
+grid on;
+alpha = 1;
+dx = 0.2;
+dt = 0.01;
+x = linspace(0,1,6);
+t = linspace(0,0.05,6);
+l = alpha*dt/(dx*dx);
+u = zeros(6,6);
+for i = 1:6
+u(i,1) = sin(pi*(i-1)/5) + sin(2*pi*(i-1)/5);
+end
+A = zeros(6,6);
+A(1,1) = 1;
+A(6,6) = 1;
+for i = 2:5
+A(i,i-1) = -l;
+A(i,i) = 2*(1+l);
+A(i,i+1) = -l;
+end
+for j = 1:5
+%plot(x,u(:,j));
+%useless = input("");
+y = zeros(1,6);
+for i = 2:5
+y(1,i)=l*u(i-1,j)+2*(1-l)*u(i,j)+l*u(i+1,j);
+end
+u(:,j+1) = y/A;
+end
+subplot(2,1,1)
+surf(t,x,u(:,:));
+xlabel('time(t)');
+ylabel('space(x)');
+zlabel('temperature');
+title('crank-nicolson');
+y_points = ones(6,1);
+for i = 1:6
+y_points(i) = 0.05;
+end
+x_points = linspace(0,1,6);
+z_points = u(:,6);
+hold on;
+scatter3(y_points, x_points, z_points, 100, 'filled');
+view(90,0);
+
+%explicit scheme
+dx = 0.02;
+dt = 0.0001;
+x = linspace(0,1,51);
+t = linspace(0,0.05,501);
+u = zeros(51,501);
+for i = 1:51
+u(i,1) = sin(pi*(i-1)/50) + sin(2*pi*(i-1)/50);
+end
+for j = 1:500
+for i = 2:50
+u(i,j+1) = u(i,j) + alpha*dt * (u(i+1,j) + u(i-1,j) - 2 * u(i,j)) / (dx * dx);
+end
+%plot(x, u(:,j));
+%useless = input("");
+end
+subplot(2,1,2);
+surf(t,x,u(:,:));
+xlabel('time(t)');
+ylabel('space(x)');
+zlabel('temperature');
+title('explicit scheme');
+y_points = ones(51,1);
+for i = 1:51
+y_points(i) = 0.05;
+end
+x_points = linspace(0,1,51);
+z_points = u(:,501);
+hold on;
+scatter3(y_points, x_points, z_points, 100, 'filled');
+view(90,0);
+shading(gca, 'interp'); % Interpolated shading for smoother appearance
+useless = input("");
+close();
+
+
+Lab 9 Assignment 3 (Crank Nicolson Method, Ravi's):
+clc;
+clear;
+dt=0.01;
+
+alpha = 1;
+delX = .2;
+delT = .01;
+T = .05;
+x = 0:delX:1;
+lambda = alpha*delT/delX^2;
+for i=1:1/delX+1
+u(i, 1) = sin(pi*x(i))+sin(2*pi*(x(i)));
+end
+t=zeros(6,1);
+for i=2:6
+    t(i,1) = t(i-1,1) + dt;
+end
+for i=1:T/delT+1
+u(1, i)=0;
+u(1/delX+1, i)=0;
+end
+
+A = zeros(1/delX-1, 1/delX-1);
+
+for i=1:1/delX-1
+for j=i-1:i+1
+if(j~=0 && j==i-1)
+A(i, j) = -1*lambda;
+end
+if(j==i)
+A(i, j) = 2*(1+lambda);
+end
+if(j~=1/delX && j==i+1)
+A(i, j) = -1*lambda;
+end
+end
+end
+
+B = zeros(1/delX-1, 1/delX-1);
+
+for i=1:1/delX-1
+for j=i-1:i+1
+if(j~=0 && j==i-1)
+B(i, j) = lambda;
+end
+if(j==i)
+B(i, j) = 2*(1-lambda);
+end
+if(j~=1/delX && j==i+1)
+B(i, j) = lambda;
+end
+end
+end
+
+for i=1:T/delT
+u(2:1/delX, i+1) = (A\B)*u(2:1/delX, i);
+end
+
+
+for i=1:T/delT+1
+plot(x, u(:, i));
+ylim([0 2])
+pause(1);
+end
+surf(t,x,u(:,:));

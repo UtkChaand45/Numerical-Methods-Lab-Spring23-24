@@ -1,0 +1,42 @@
+#NumericalMethodsLaboratory_Assignment3
+1)
+import numpy as np
+import matplotlib.pyplot as plt
+
+# User-provided data
+x_values = np.array([1, 1.5, 2, 2.5, 3, 3.5, 4])
+y_values = np.array([25, 31, 27, 28, 36, 35, 32])
+
+# Linear regression
+coefficients = np.polyfit(x_values, y_values, 1)
+linear_function = np.poly1d(coefficients)
+
+# Plotting
+plt.scatter(x_values, y_values, label='Data points')
+plt.plot(x_values, linear_function(x_values), color='red', label='Linear Regression')
+plt.xlabel('X values')
+plt.ylabel('Y values')
+plt.legend()
+plt.show()
+
+2)
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# User-provided data
+x_values = np.array([1, 1.5, 2, 2.5, 3, 3.5, 4])
+y_values = np.array([25, 31, 27, 28, 36, 35, 32])
+
+# Degree-3 polynomial regression
+coefficients_degree3 = np.polyfit(x_values, y_values, 3)
+poly_function_degree3 = np.poly1d(coefficients_degree3)
+
+# Plotting
+plt.scatter(x_values, y_values, label='Data points')
+x_range = np.linspace(min(x_values), max(x_values), 100)
+plt.plot(x_range, poly_function_degree3(x_range), color='green', label='Degree-3 Polynomial Regression')
+plt.xlabel('X values')
+plt.ylabel('Y values')
+plt.legend()
+plt.show()

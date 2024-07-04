@@ -1,0 +1,83 @@
+#NumericalMethodsLab_Assignment1
+Q1)
+hold on;
+x = linspace(1,6,6001);
+h = 1;
+X = zeros(6,1);
+for i = 1:6
+    X(i) = i;
+end
+f = zeros(6,1);
+f(1) = 14.5;
+f(2) = 19.5;
+f(3) = 30.5;
+f(4) = 53.5;
+f(5) = 94.5;
+f(6) = 159.5;
+df = zeros(6,6);
+for j = 1:6
+    df(1,j) = f(j);
+end
+for i = 1:4
+    for j = 1:6-i
+        df(i+1,j) = df(i,j+1) - df(i,j);
+    end
+end
+Pn = zeros(6001,1);
+y = zeros(6001,6);
+for i = 1:6001
+    for j = 1:6
+        y(i,j) = (x(i) - X(j))/h;
+    end
+end
+t = zeros(6001,6);
+for i = 1:6001
+    for j = 1:6
+        t(i,j) = 1;
+        for k = 1:j
+            t(i,j) = t(i,j) * y(i,k) / k;
+        end
+        t(i,j) = t(i,j) * df(j,1);
+    end
+end
+for i = 1:6001
+    Pn(i) = f(1);
+    for j = 1:6
+        Pn(i) = Pn(i) + t(i,j);
+    end
+end
+plot(x, Pn(:));
+scatter(4.5, Pn(1+ 6000*(4.5-1)/5))
+useless = input("");
+close();
+
+Q2)
+x = linspace(0,6,1001);
+X = zeros(4,1);
+f = zeros(4,1);
+for i = 1:4
+    X(i) = 2 * i - 2;
+end
+f(1) = 1;
+f(2) = -1;
+f(3) = 3;
+f(4) = 4;
+Pn = zeros(1,1001);
+for i = 1:1001
+    u = 0;
+    for j = 1:4
+        t = f(j);
+        for k = 1:(j-1)
+            t = t*(x(i)-X(k)-6/1000)/(X(j)-X(k));
+        end
+        for k = (j+1):4
+            t = t*(x(i)-X(k)-6/1000)/(X(j)-X(k));
+        end
+        u = u + t;
+    end
+    Pn(i) = u;
+end
+plot(x,Pn(:));
+f(x) = Pn(1+x/6*1000)
+%useless = input("");
+close();

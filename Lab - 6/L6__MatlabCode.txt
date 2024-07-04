@@ -1,0 +1,118 @@
+Lab 6 (Peicewise Func, my ver, 1D Shallow Water Eqn)
+
+%clc;
+clear;
+gi=9.81;
+m = @ (x) exp( (-(x-2)*(x-2)) / 0.1 );
+delx=input("Enter delta x:");
+X=5;
+g=(5/delx)+1;
+x=linspace(0,5,g);
+T=1;
+t=[];
+t(1)=0;
+fun=input("Enter function h(x,0) 2/3:");
+h=zeros(5000,g);
+hu=zeros(5000,g);
+u=zeros(5000,g);
+if fun==2
+    for i=1:g
+        if x(i)<2.5
+            h(1,i)=2;
+        else
+            h(1,i)=1;
+        end
+    end
+
+else
+    for i=1:g
+        h(1,i) = m(x(i));
+    end
+end
+for i=1:g
+    u(1,i)=0;
+    hu(1,i)=h(1,i)*u(1,i);
+end
+
+sum_t=0;
+n=1;
+while (sum_t<=0.2)
+    timestep=zeros(1,g);
+    for i = 1:g
+        timestep(1,i) = 0.008/ ( abs( h(n,i)*u(n,i)/h(n,i) ) + sqrt( gi*h(n,i) ) );
+    end
+    delt=min(timestep);
+    for i=1:g
+        if (i-1)==0
+            h(n+1,i)=0.5*(h(n,i+1)+h(n,1)) - (delt/(2*delx)) * ((h(n,i+1)*u(n,i+1))-(h(n,1)*u(n,1)));
+            hu(n+1,i)=0.5*(h(n,i+1)*u(n,i+1)+h(n,1)*u(n,1)) - (delt/(2*delx)) * ((h(n,i+1)*h(n,i+1)*u(n,i+1)+0.5*gi*(h(n,i+1)^2))-(h(n,1)*h(n,1)*u(n,1)+0.5*gi*(h(n,1)^2)));
+            u(n+1,i)=hu(n+1,i)/h(n+1,i);
+        elseif (i+1)==g+1
+            h(n+1,i)=0.5*(h(n,g)+h(n,i-1))-(delt/(2*delx))*(h(n,g)*u(n,g))-(h(n,i-1)*u(n,i-1));
+            hu(n+1,i)=0.5*(h(n,g)*u(n,g)+h(n,i-1)*u(n,i-1)) - (delt/(2*delx)) * ((h(n,g)*h(n,g)*u(n,g)+0.5*gi*(h(n,g)^2))-(h(n,i-1)*h(n,i-1)*u(n,i-1)+0.5*gi*(h(n,i-1)^2)));
+            u(n+1,i)=hu(n+1,i)/h(n+1,i);
+        else
+            h(n+1,i)=0.5*(h(n,i+1)+h(n,i-1))-(delt/(2*delx))*((h(n,i+1)*u(n,i+1))-(h(n,i+1)*u(n,i-1)));
+            hu(n+1,i)=0.5*(h(n,i+1)*u(n,i+1)+h(n,i-1)*u(n,i-1)) - (delt/(2*delx)) * ((h(n,i+1)*h(n,i+1)*u(n,i+1)+0.5*gi*(h(n,i+1)^2))-(h(n,i-1)*h(n,i-1)*u(n,i-1)+0.5*gi*(h(n,i-1)^2)));
+            u(n+1,i)=hu(n+1,i)/h(n+1,i);
+        end
+    end
+    sum_t = sum_t + delt;
+    t(n+1)=sum_t;
+    n=n+1;
+end
+%plot(x,h(1,:),'r-')
+hold on;
+plot(x,h(n,:),'g-')
+hold on;
+plot(x,u(n,:),'r-')
+
+
+
+Q2 Anil's Ver
+
+stepx=input("enter the  step size of x:");
+xi=0:stepx:5;
+deltarr=ones(1,length(xi));
+delt=[0];
+H=ones(1,length(xi));
+U=ones(1,length(xi));
+h=@(x)exp(-((x-2)^2)/0.1);
+u=@(x) 0;
+u1=zeros(length(xi),1);
+u2=zeros(length(xi),1);
+for i=1:length(xi)
+     u1(i,size(u1,2))=h(xi(i));
+     u2(i,size(u2,2))=h(xi(i))*u(xi(i));
+    
+end
+k=1;
+  
+while sum(delt)<0.2
+    k=k+1;
+   for i=1:length(xi)
+      deltarr(i)=(0.8*stepx)/((abs(u2(i,k-1)/u1(i,k-1))+sqrt(9.81*u1(i,k-1))));
+   end
+    delt(1,k)=min(deltarr);
+   for i=2:length(xi)-1
+    
+    u1(i,k)=0.5*(u1(i+1,k-1)+u1(i-1,k-1))-((0.5/stepx)*delt(1,k))*(u2(i+1,k-1)-u2(i-1,k-1));
+ u2(i,k)=0.5*(u2(i+1,k-1)+u2(i-1,k-1))-((0.5/stepx)*delt(1,k))*((u2(i+1,k-1)*u2(i+1,k-1)/u1(i+1,k-1)+0.5*9.81*u1(i+1,k-1)*u1(i+1,k-1))-(u2(i-1,k-1)*u2(i-1,k-1)/u1(i-1,k-1)+0.5*9.81*u1(i-1,k-1)*u1(i-1,k-1)));
+   end
+   u1(1,k)=u1(2,k);
+   u1(length(xi),k)=u1(length(xi)-1,k);
+   u2(1,k)=u2(2,k);
+   u2(length(xi),k)=u2(length(xi)-1,k);
+end
+   
+   for i=1:length(xi)
+    H(i)=u1(i,k);
+    U(i)=u2(i,k)/u1(i,k);
+   end
+   k
+   sum(delt)
+   plot(xi,H)
+   hold on
+   plot(xi,U)
+
+
