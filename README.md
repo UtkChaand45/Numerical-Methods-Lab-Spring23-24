@@ -1,4 +1,5 @@
-Numerical Methods Laboratory Spring 2023-24 - IIT Kharagpur (Department of Mathematics)
+#### Numerical Methods Laboratory Spring 2023-24 - IIT Kharagpur (Department of Mathematics)
+
 **Course Information**
 - **Subject Code**: MA29202
 - **Subject Name**: Numerical Methods Laboratory
