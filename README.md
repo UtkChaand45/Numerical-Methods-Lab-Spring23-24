@@ -34,3 +34,8 @@ The Numerical Methods Laboratory aims to provide hands-on experience in implemen
 #### Upcoming Updates
 - The repository will be updated soon with graphical solutions for each of the problems.
 
+### Acknowledgements
+
+- I extend my sincere gratitude to Prof. Naveen Kumar Garg for his invaluable guidance and supervision throughout the course of these MATLAB projects and assignments. I also appreciate the assistance provided by the teaching assistants (TAs) during this period. Furthermore, I would like to acknowledge the support and collaboration of my batchmates, particularly Ritil Ranjan and Anil Banoth, for their willingness to discuss problems, develop new approaches for more optimized code, and to Ritil Ranjan for providing additional MATLAB files encompassing various concepts.
+
+
